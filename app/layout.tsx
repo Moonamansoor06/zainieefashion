@@ -1,8 +1,10 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
+import Navbar from '@/components/navbar';
+import Navbar2 from '@/components/nav2';
 
 export const metadata = {
-  title: 'Vercel Postgres Demo with Drizzle',
+  title: 'zainiee online store',
   description:
     'A simple Next.js app with Vercel Postgres as the database and Drizzle as the ORM',
 };
@@ -20,7 +22,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.variable}>{children}</body>
+      <body className={inter.variable}>
+        <Navbar/>
+        <Navbar2/>
+        {children}
+        </body>
     </html>
   );
 }
