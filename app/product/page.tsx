@@ -3,15 +3,18 @@ import React, { useEffect, useState } from 'react';
 import Card from '../../components/card';
 import { getAllProducts } from '../../fetch/productsList';
 import { getAllcategories } from '../../fetch/categoryList';
+import { useRouter } from 'next/navigation';
 
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const productsData = await getAllProducts();
+        console.log("products data is ",productsData)
         const updatedProducts = await fetchProductAssets(productsData);
         setProducts(updatedProducts);
       } catch (error) {
@@ -46,7 +49,7 @@ const ProductPage = () => {
         };
         updatedProducts.push(updatedProduct);
       } catch (error) {
-        console.error(error);
+        //console.error(error);
         updatedProducts.push(product);
       }
     }
@@ -64,8 +67,9 @@ const ProductPage = () => {
       }, 1000);
     });
   };
+
   const getCategoryNameById = (categoryId) => {
-    const category = categories.find((cat) => cat.Category_ID === categoryId);
+    const category = categories.find((cat) => String(cat.Category_ID) === String(categoryId));
     return category ? category.Name : '';
   };
 
@@ -78,15 +82,32 @@ const ProductPage = () => {
     return acc;
   }, {});
 
+  
+
+  const handleProductDetails = (productId) => {
+    console.log("product id from product is", productId);
+    router.push(`/product/${productId}/`);
+  };
+
+  if (!productsByCategory) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div>
+    <div className="justify-center mx-8 my-8">
       {Object.keys(productsByCategory).map((category, index) => (
-        <section key={index}>
-          <h2>{getCategoryNameById(category)}</h2>
-          <div className="grid grid-cols-3 gap-4 mx-8">
-            {productsByCategory[category].slice(0, 3).map((product, index) => (
-              <Card key={index} product={product} />
-            ))}
+        <section key={index} className="mb-8 ml-32">
+          <h1 className="text-3xl font-bold mb-4 font-head1Main underline">{getCategoryNameById(category).toUpperCase()}</h1>
+          <div className="grid  mt-8 grid-cols-1 md:grid-cols-3 gap-4">
+            {productsByCategory[category].map((product, index) => {
+              console.log("product is",product)
+              return(
+              <Card
+                key={index}
+                product={product}
+                onProductDetails={handleProductDetails}
+              />
+            )})}
           </div>
         </section>
       ))}

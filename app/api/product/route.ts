@@ -1,32 +1,33 @@
-// import {client} from '@/sanity/lib/client'
+import { client } from '@/sanity/lib/client';
 
-// export default async function handler(req, res) {
-//   if (req.method === 'POST') {
-//     // Insert data
-//     const { title, description } = req.body; // Extract data from the request body
+export default async function handler(req, res) {
+  if (req.method === 'POST') {
 
-//     const mutation = `
-//       *[_type == 'product']
-//       | [{
-//         _type: 'product',
-//         title: '${title}',
-//         description: '${description}'
-//       }]
-//     `;
+    const { title, description } = req.body; 
+    const mutation = {
+      _type: 'product',
+      title: title,
+      description: description
+    };
 
-//     const insertedData = await client.transaction().create(mutation).commit();
+    const insertedData = await client.create(mutation); 
+    res.status(200).json({ message: 'Data inserted successfully!', data: insertedData });
+  } else if (req.method === 'PUT') {
+    // Update data
+    const { id, title, description } = req.body; // Extract the ID and updated data from the request body
 
-//     res.status(200).json({ message: 'Data inserted successfully!', data: insertedData });
-//   } else if (req.method === 'DELETE') {
-//     // Delete data
-//     const { id } = req.body; // Extract the ID of the item to delete from the request body
+    const mutation = client
+      .patch(id)
+      .set({ title: title, description: description }); // Use the patch method with the ID and set the updated fields
 
-//     const mutation = `*[_id == '${id}'] | []._id`;
+    const updatedData = await mutation.commit(); // Commit the mutation
 
-//     await sanityClient.transaction().delete(mutation).commit();
-
-//     res.status(200).json({ message: 'Data deleted successfully!' });
-//   } else {
-//     res.status(400).json({ message: 'Invalid request method!' });
-//   }
-// }
+    res.status(200).json({ message: 'Data updated successfully!', data: updatedData });
+  } else if (req.method === 'DELETE') {
+    const { id } = req.body; 
+    await client.delete(id); 
+    res.status(200).json({ message: 'Data deleted successfully!' });
+  } else {
+    res.status(400).json({ message: 'Invalid request method!' });
+  }
+}

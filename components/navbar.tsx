@@ -16,18 +16,29 @@ import {
   } from "@/components/ui/navigation-menu"
 import Link from "next/link"
 import { getAllcategories } from "@/fetch/categoryList";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 
-// const catArr = async () => {
-//   const catArray = await getAllcategories();
 
-// console.log("cat array from catArr function is",catArray)
-//   return catArray;
-// }
+ 
+
+ 
+  
+
 
 const Navbar = () => {
-  
+   const { isLoaded, userId, sessionId, getToken } = useAuth();
   const [categoryArray, setCategoryArray] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleSignOut = () => {
+    router.push('/sign-out')
+  };
+const router=useRouter()
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -42,10 +53,10 @@ const Navbar = () => {
     fetchCategories();
   }, []);
 
-  console.log("cat has",categoryArray)
+
   
     return (
-      <nav className="flex justify-between items-center h-20 px-10">
+      <nav className="relative z-10 flex justify-between items-center h-20 px-10">
       
       <div >
 <NavigationMenu className="">
@@ -62,9 +73,9 @@ const Navbar = () => {
                 {categoryArray.map((component,i) =>{ 
               
                 return(
-                  <ul className="grid w-[200px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                 <ListItem  key={i} href={component.Name}>
-                  {component.Name}
+                  <ul className="grid w-[300px] gap-3 p-4 md:w-[300px] md:grid-cols-2 lg:w-[300px] ">
+                 <ListItem  key={component.Category_ID} href={component.Name}>
+                  {component.Name.toUpperCase()}
                  </ListItem>
                  </ul>
               )})}
@@ -87,11 +98,31 @@ const Navbar = () => {
 
        </div>
        <div className="flex justify-between">
-                        <div className="mr-4">
-                    <button className="bg-gray-300 p-2 rounded-full">
-                    <User2/>
-                    </button>
-                  </div>
+        <div className="mr-4">
+          <button
+            onClick={toggleDropdown}
+            className="bg-gray-300 p-2 rounded-full"
+          >
+            <User2 />
+          </button>
+           {showDropdown && (
+            <ul className="absolute right-0 mt-2 py-2 bg-white border rounded shadow-lg z-20">
+              {isLoaded && userId ? (
+                <li>
+                  <button onClick={handleSignOut} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                    Sign Out
+                  </button>
+                </li>
+              ) : (
+                <li>
+                  <button onClick={() => router.push('/sign-up/')} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                    Sign In/Sign Up
+                  </button>
+                </li>
+              )} 
+            </ul>
+          )}
+        </div>
      
       <div className="p-2 rounded-full bg-gray-300">
       
@@ -114,7 +145,7 @@ const ListItem = React.forwardRef<
   React.ComponentPropsWithoutRef<"a">
 >(({ className, children, ...props }, ref) => {
   return (
-    <li>
+    <li  >
       <NavigationMenuLink asChild>
         <a
           ref={ref}

@@ -8,11 +8,7 @@ export default {
         title: 'Seller ID',
         type: 'number',
       },
-      {
-        name: 'User_ID',
-        title: 'User ID',
-        type: 'number',
-      },
+   
       {
         name: 'Business_Name',
         title: 'Business Name',

@@ -1,9 +1,9 @@
 import { getAllProducts } from "./productsList";
 
 function fetchAsset(ref, assetData) {
-  // Simulating an asynchronous API call using a Promise
+
   return new Promise((resolve, reject) => {
-    // Simulating a delay of 1 second
+    
     setTimeout(() => {
       if (assetData.hasOwnProperty(ref)) {
         resolve(assetData[ref]);

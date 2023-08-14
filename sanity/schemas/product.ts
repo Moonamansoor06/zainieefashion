@@ -49,8 +49,8 @@ export default {
                 type: 'string',
               },
               {
-                name: 'quantity',
-                title: 'quantity',
+                name: 'qty',
+                title: 'qty',
                 type: 'number',
               },
               {

@@ -4,8 +4,10 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: ["pbs.twimg.com"],
+    domains: ["pbs.twimg.com",'cdn.sanity.io'],
   },
-};
+
+}
+;
 
 module.exports = nextConfig;
